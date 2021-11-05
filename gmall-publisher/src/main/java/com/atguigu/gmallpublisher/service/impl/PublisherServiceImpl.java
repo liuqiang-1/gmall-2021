@@ -35,7 +35,7 @@ DauMapper dauMapper;
 
     @Override
     public Double getOrderAmountTotal(String date) {
-     return    1.1;
+     return    orderMapper.selectOrderAmountTotal(date);
     }
 
     @Override

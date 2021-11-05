@@ -1,7 +1,4 @@
 package com.atguigu.gmallpublisher.controller;
-
-
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import com.atguigu.gmallpublisher.service.PublisherService;
@@ -33,9 +30,17 @@ public class Controller {
         totalmid.put("id","new_id");
         totalmid.put("name","");
         totalmid.put("value",233);
+
+        HashMap<String, Object> total_amount = new HashMap<>();
+        total_amount.put("id","order_amount");
+        total_amount.put("name","新增交易额");
+        total_amount.put("value",publisherService.getOrderAmountTotal(date));
+
+
         ArrayList<Map> maps = new ArrayList<>();
         maps.add(activity);
         maps.add(totalmid);
+        maps.add(total_amount);
         String s = JSONObject.toJSONString(maps);
         return s;
     }
