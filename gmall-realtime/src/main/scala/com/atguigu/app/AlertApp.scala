@@ -3,7 +3,7 @@ package com.atguigu.app
 import com.alibaba.fastjson.JSON
 import com.atguigu.bean.{CouponAlertInfo, EventLog}
 import com.atguigu.constants.GmallConstants
-import com.atguigu.utils.MyKafkaUtil
+import com.atguigu.utils.{MyEsUtil, MyKafkaUtil}
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
@@ -66,9 +66,24 @@ object AlertApp {
 
       })
     })
-    val CouponAlterInfo: DStream[CouponAlertInfo] = boolCouponAlert.filter(!_._1).map(_._2)
+    //过滤出预警日志
+    val CouponAlterInfo: DStream[CouponAlertInfo] = boolCouponAlert.filter(_._1).map(_._2)
 
     CouponAlterInfo.print()
+
+    //将预警日志写到 es
+    CouponAlterInfo.foreachRDD(rdd=>{
+      rdd.foreachPartition(iter=>{
+        val list: List[(String, CouponAlertInfo)] = iter.toList.map(log => {
+          (log.mid + log.ts / 1000 / 60, log)
+        })
+
+        MyEsUtil.insertBulk(GmallConstants.ES_ALERT_INDEX+"0625",list)
+
+      })
+    })
+
+
 
     ssc.start()
     ssc.awaitTermination()

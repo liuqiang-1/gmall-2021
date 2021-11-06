@@ -6,6 +6,7 @@ import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.core.Bulk;
 import io.searchbox.core.Index;
+import org.elasticsearch.rest.action.document.RestBulkAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,28 +14,23 @@ import java.util.ArrayList;
 public class Es02_BulkWrite {
     public static void main(String[] args) throws IOException {
         JestClientFactory jestClientFactory = new JestClientFactory();
-        HttpClientConfig build = new HttpClientConfig.Builder("Http://hadoop102:9200").build();
-        jestClientFactory.setHttpClientConfig(build);
-
+        HttpClientConfig conf = new HttpClientConfig.Builder("Http://hadoop102:9200").build();
+        jestClientFactory.setHttpClientConfig(conf);
         JestClient jestClient = jestClientFactory.getObject();
+        Bulk.Builder builder = new Bulk.Builder().defaultIndex("movie0625").defaultType("_doc");
+        Movie movie = new Movie("1004", "你和你妈");
+        Movie movie1 = new Movie("1005", "你和你姐姐");
+        Movie movie2 = new Movie("1006", "你和弟弟");
 
 
-        Movie movie1 = new Movie("101", "喜羊羊与灰太狼");
-        Movie movie2 = new Movie("102", "岁月逝去");
-        Movie movie3 = new Movie("103", "药神");
-        Index build1 = new Index.Builder(movie1).id("1001").build();
-        Index build2 = new Index.Builder(movie2).id("1002").build();
-        Index build3 = new Index.Builder(movie3).id("1003").build();
-        ArrayList<Index> indices = new ArrayList<>();
-        indices.add(build1);
-        indices.add(build2);
-        indices.add(build3);
-
-        Bulk bulk = new Bulk.Builder()
-                .defaultIndex("movie0625")
-                .defaultType("_doc")
-                .addAction(indices).build();
+        Index index1 = new Index.Builder(movie).build();
+        Index index2 = new Index.Builder(movie1).build();
+        Index index3 = new Index.Builder(movie2).build();
+        Bulk bulk = builder.addAction(index1)
+                .addAction(index2)
+                .addAction(index3).build();
         jestClient.execute(bulk);
+
 
 
         jestClient.close();
