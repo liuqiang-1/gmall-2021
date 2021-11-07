@@ -114,6 +114,7 @@ object SaleDetailApp {
         saleDetail.mergeUserInfo(userInfo)
         saleDetail
       })
+      jedis.close()
       details
     })
 
@@ -126,12 +127,10 @@ object SaleDetailApp {
           (saleDetail.order_detail_id, saleDetail)
         })
 
-        MyEsUtil.insertBulk( GmallConstants.ES_INDEX_SALE+"0625",list)
+        MyEsUtil.insertBulk( GmallConstants.ES_SALE_DETAIL_INDEX +"0625",list)
       })
 
     })
-
-
 
 
     ssc.start()

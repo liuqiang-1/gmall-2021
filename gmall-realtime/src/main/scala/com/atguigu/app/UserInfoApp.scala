@@ -30,6 +30,7 @@ object UserInfoApp {
           jedis.set(redisKey,record.value())
 
         })
+        jedis.close()
       })
     })
 

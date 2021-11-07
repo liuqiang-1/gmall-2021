@@ -19,6 +19,6 @@ public class GmallConstants {
     public static final String ES_ALERT_INDEX = "gmall_coupon_alert";
 
     //灵活分析需求   index 前缀
-    public static final String ES_INDEX_SALE="gmall2021_sale_detail";
+    public static final String ES_SALE_DETAIL_INDEX="gmall2021_sale_detail";
 
 }
